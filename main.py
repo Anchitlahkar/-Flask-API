@@ -1,16 +1,7 @@
+from storage import allArticals, liked_articles, not_liked_articles
 from flask import Flask, jsonify, request
-import csv
-
-with open('articles.csv',encoding='utf-8' ) as f:
-    csv_reader = csv.reader(f)
-    data = list(csv_reader)
-
-
-allArticals = data[1:]
-
-liked_articles = []
-not_liked_articles = []
-
+from Demographic_Filtering import output
+from Content_Based_Filtering import get_recommendation
 
 app = Flask(__name__)
 
@@ -52,6 +43,24 @@ def not_liked_articals():
     return jsonify({
         'status': 'success'
     })
+
+
+@app.route('/Demographic_Filtering')
+def Demographic_Filtering():
+    return jsonify({
+        'data': output,
+        'status': 'success'
+    })
+
+
+@app.route('/Content_Based_Filtering', methods=['POST'])
+def Content_Based_Filtering():
+    title = request.args.get("name")
+    recommendation = get_recommendation(title)
+
+    return jsonify({
+        'data': recommendation
+    }), 200
 
 
 if __name__ == '__main__':
