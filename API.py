@@ -55,8 +55,12 @@ def Demographic_Filtering():
 
 @app.route('/Content_Based_Filtering', methods=['POST'])
 def Content_Based_Filtering():
-    title = request.args.get("name")
-    recommendation = get_recommendation(title)
+    try:
+        recommendation = liked_articles[0][15]
+    
+    except:
+        recommendation = []
+        pass
 
     return jsonify({
         'data': recommendation
