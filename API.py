@@ -55,15 +55,27 @@ def Demographic_Filtering():
 
 @app.route('/Content_Based_Filtering', methods=['POST'])
 def Content_Based_Filtering():
-    try:
-        recommendation = liked_articles[0][15]
-    
-    except:
-        recommendation = []
-        pass
-
+    all_recommended = []
+    for liked_article in liked_articles:
+        output = get_recommendation(liked_article[15])
+        print(liked_article[15])
+        for data in output:
+            all_recommended.append(data)
+    import itertools
+    all_recommended.sort()
+    all_recommended = list(all_recommended for all_recommended,
+                           _ in itertools.groupby(all_recommended))
+    article_data = []
+    for recommended in all_recommended:
+        _d = {
+            'title': recommended[0],
+            'text': recommended[1],
+            'url': recommended[2] or 'n/a',
+        }
+        article_data.append(_d)
     return jsonify({
-        'data': recommendation
+        "data": article_data,
+        "status": "success"
     }), 200
 
 
